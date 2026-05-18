@@ -5,15 +5,20 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "dwave-ocean-sdk>=9.3.0",
+    "highspy>=1.14.0",
     "ipykernel>=7.2.0",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.9",
     "networkx>=3.6.1",
     "numpy>=2.4.4",
+    "pandapower>=3.1.2",
     "pandas>=3.0.3",
     "pennylane>=0.45.0",
+    "pyomo>=6.10.0",
     "qiskit>=2.4.1",
     "scipy>=1.17.1",
+    "vanta-lattice",
 ]
 
 [dependency-groups]
@@ -22,3 +27,6 @@ dev = [
     "pytest>=9.0.3",
     "ruff>=0.15.13",
 ]
+
+[tool.uv.sources]
+vanta-lattice = { path = "../vanta-lattice", editable = true }
