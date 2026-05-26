@@ -1,0 +1,69 @@
+{
+  "objective_value": 18925.79748621252,
+  "solver_name": "CPLEX",
+  "solve_time_seconds": 0.1657039001584053,
+  "selected_count": 7,
+  "selected_candidates": [
+    {
+      "candidate_id": "cand_parallel_7_8_1",
+      "from_bus": "7",
+      "to_bus": "8",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_8_9_2",
+      "from_bus": "8",
+      "to_bus": "9",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_7_29_6",
+      "from_bus": "7",
+      "to_bus": "29",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_25_29_7",
+      "from_bus": "25",
+      "to_bus": "29",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_62_63_10",
+      "from_bus": "62",
+      "to_bus": "63",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_shortcut_79_65_3",
+      "from_bus": "79",
+      "to_bus": "65",
+      "capacity_mva": 500.0,
+      "build_cost": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_88_24_16",
+      "from_bus": "88",
+      "to_bus": "24",
+      "capacity_mva": 500.0,
+      "build_cost": 1.0,
+      "voltage_kv": 138.0
+    }
+  ],
+  "assumptions": {
+    "candidates": "heuristic",
+    "costs": "proxy",
+    "budget": "ratio"
+  }
+}

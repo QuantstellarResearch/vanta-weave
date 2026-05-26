@@ -133,9 +133,10 @@ def build_binary_constraints(
             ]
         )
 
-        return (
-            0 <= variable,
-            variable <= 1,
+        return pyo.inequality(
+            0,
+            variable,
+            1,
         )
 
     return pyo.Constraint(

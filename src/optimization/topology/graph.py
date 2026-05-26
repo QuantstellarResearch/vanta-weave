@@ -33,7 +33,7 @@ class TopologyNode:
     - graph projection vertex
     """
 
-    node_id: str
+    node_id: int
 
     voltage_kv: float
 
@@ -55,7 +55,7 @@ class TopologyEdge:
     - graph relationship
     """
 
-    edge_id: str
+    edge_id: int
 
     from_node: int
     to_node: int
@@ -152,7 +152,7 @@ def build_topology_nodes(
 
         topology_nodes.append(
             TopologyNode(
-                node_id=bus.bus_id,
+                node_id=bus.id,
 
                 voltage_kv=bus.voltage_kv,
 
@@ -184,7 +184,7 @@ def build_topology_edges(
 
         topology_edges.append(
             TopologyEdge(
-                edge_id=line.line_id,
+                edge_id=line.id,
 
                 from_node=line.from_bus,
 
