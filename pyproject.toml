@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cplex>=22.2.0.0",
     "dimod>=0.12.21",
     "dwave-ocean-sdk>=9.3.0",
     "highspy>=1.14.0",
@@ -13,6 +14,7 @@ dependencies = [
     "matplotlib>=3.10.9",
     "mitiq>=0.0.0",
     "networkx>=3.6.1",
+    "numba>=0.65.1",
     "numpy>=2.4.4",
     "pandapower>=3.1.2",
     "pandas==2.2.3",
@@ -20,6 +22,7 @@ dependencies = [
     "pyomo>=6.10.0",
     "qiskit>=2.4.1",
     "scipy>=1.17.1",
+    "simbench>=1.6.1",
     "vanta-lattice",
 ]
 

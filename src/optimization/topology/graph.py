@@ -57,8 +57,8 @@ class TopologyEdge:
 
     edge_id: str
 
-    from_node: str
-    to_node: str
+    from_node: int
+    to_node: int
 
     capacity_mva: float
 

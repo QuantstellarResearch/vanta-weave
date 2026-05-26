@@ -9,7 +9,7 @@ from pyomo.opt import SolverFactory
 from pyomo.opt import SolverStatus
 from pyomo.opt import TerminationCondition
 
-from optimization.pyomo.builders import (
+from src.optimization.pyomo.builders import (
     PyomoExecutionArtifacts,
 )
 
@@ -51,7 +51,7 @@ class OptimizationSolveResult:
     - execution results
     - selected infrastructure decisions
 
-    Independent from:
+    Independent of:
     - Pyomo internals
     - solver-specific APIs
     """
@@ -290,6 +290,71 @@ def solve_with_gurobi(
     )
 
 
+def solve_with_cplex(
+    execution_artifacts: PyomoExecutionArtifacts,
+) -> OptimizationSolveResult:
+    """
+    Execute optimization using CPLEX solver.
+
+    Recommended for:
+    - commercial-grade MILP performance
+    - large-scale benchmark runs
+    """
+
+    model = (
+        execution_artifacts
+        .optimization_model
+        .model
+    )
+
+    solver = SolverFactory("cplex")
+
+    start_time = perf_counter()
+
+    results = solver.solve(
+        model,
+        tee=False,
+    )
+
+    end_time = perf_counter()
+
+    validate_solver_termination(
+        results=results,
+    )
+
+    execution_metadata = (
+        SolverExecutionMetadata(
+            solver_name="CPLEX",
+            solve_time_seconds=(
+                end_time - start_time
+            ),
+            solver_status=str(
+                results.solver.status
+            ),
+            termination_condition=str(
+                results.solver
+                .termination_condition
+            ),
+        )
+    )
+
+    return OptimizationSolveResult(
+        objective_value=(
+            extract_objective_value(
+                execution_artifacts
+            )
+        ),
+
+        selected_candidate_ids=(
+            extract_selected_candidate_ids(
+                execution_artifacts
+            )
+        ),
+
+        execution_metadata=execution_metadata,
+    )
+
+
 # =========================================================
 # PUBLIC EXECUTION API
 # =========================================================
@@ -319,6 +384,11 @@ def solve_optimization_problem(
 
     if normalized_solver_name == "gurobi":
         return solve_with_gurobi(
+            execution_artifacts
+        )
+
+    if normalized_solver_name == "cplex":
+        return solve_with_cplex(
             execution_artifacts
         )
 
