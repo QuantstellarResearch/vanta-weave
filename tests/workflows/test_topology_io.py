@@ -4,6 +4,7 @@ from pathlib import Path
 
 from workflows._helpers.topology_io import read_candidate_list, read_selected_lines, build_minimal_solution
 
+
 def test_minimal_solution_roundtrip(tmp_path):
     cand = [{"candidate_id": "c1", "spec": {"length": 10}}]
     selected = {"selected_candidates": ["c1"]}

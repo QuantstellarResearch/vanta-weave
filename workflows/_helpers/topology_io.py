@@ -2,10 +2,12 @@
 import json
 from typing import List, Dict
 
+
 def read_candidate_list(path: str) -> List[Dict]:
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     return data
+
 
 def read_selected_lines(path: str) -> List[str]:
     with open(path, 'r', encoding='utf-8') as f:
@@ -16,6 +18,7 @@ def read_selected_lines(path: str) -> List[str]:
     if isinstance(data, list):
         return data
     raise ValueError("Unsupported selected_lines.json format")
+
 
 def build_minimal_solution(candidates: List[Dict], selected_ids: List[str]) -> Dict:
     # Simple structure consumed by the topology projection/analysis code
