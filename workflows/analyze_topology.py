@@ -137,6 +137,52 @@ def run_topology_report(candidate_list_path: str = 'outputs/candidate_list.json'
         f.write(md)
 
     LOG.info("Wrote topology report to %s", out_dir_p)
+    # Write provenance
+    try:
+        import hashlib
+        import subprocess
+        import sys
+        from datetime import datetime
+
+        def file_sha256(path: Path) -> str:
+            h = hashlib.sha256()
+            with open(path, 'rb') as f:
+                for chunk in iter(lambda: f.read(8192), b''):
+                    h.update(chunk)
+            return h.hexdigest()
+
+        inputs = {}
+        for p in [("candidate_list", candidate_list_path), ("selected", selected_path)]:
+            try:
+                pp = Path(p[1])
+                inputs[p[0]] = {"path": str(pp), "sha256": file_sha256(pp) if pp.exists() else None}
+            except Exception:
+                inputs[p[0]] = {"path": str(p[1]), "sha256": None}
+
+        git_rev = None
+        try:
+            git_rev = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode().strip()
+        except Exception:
+            git_rev = None
+
+        prov = {
+            "timestamp": datetime.utcnow().isoformat() + 'Z',
+            "git_commit": git_rev,
+            "python_version": sys.version,
+            "inputs": inputs,
+            "config": {
+                "candidate_list_path": candidate_list_path,
+                "selected_path": selected_path,
+                "mapped_data_path": mapped_data_path,
+                "validate_top_n": validate_top_n,
+            },
+        }
+
+        with open(out_dir_p / 'topology_report.prov.json', 'w', encoding='utf-8') as f:
+            json.dump(prov, f, indent=2)
+    except Exception:
+        LOG.exception("Failed to write provenance file")
+
     return report
 
 
