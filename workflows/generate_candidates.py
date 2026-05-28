@@ -9,7 +9,7 @@ from problems.eon_grid_expansion.decision_space import (
     DecisionSpace,
 )
 
-from src.utils.candidate_utils import (
+from src.utils.candidate_ids import (
     make_candidate_id,
     canonical_base_key,
     sort_key_for_variant,
