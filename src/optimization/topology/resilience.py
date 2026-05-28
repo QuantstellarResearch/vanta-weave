@@ -169,73 +169,52 @@ def identify_critical_infrastructure_edges(
 
     graph = projection.networkx_graph
 
-    bridge_edges = set(
-        nx.bridges(graph)
-    )
+    bridge_edges = set(nx.bridges(graph))
+    edge_betweenness = nx.edge_betweenness_centrality(graph)
 
-    edge_betweenness = (
-        nx.edge_betweenness_centrality(
-            graph
-        )
-    )
+    aggregated: dict[tuple[str, str], CriticalInfrastructureEdge] = {}
 
-    critical_edges = []
+    for (from_node, to_node, edge_data) in graph.edges(data=True):
+        u, v = sorted([str(from_node), str(to_node)])
+        key = (u, v)
 
-    for (
-        from_node,
-        to_node,
-        edge_data,
-    ) in graph.edges(data=True):
+        bridge_edge = ((from_node, to_node) in bridge_edges) or ((to_node, from_node) in bridge_edges)
 
-        bridge_edge = (
-            (from_node, to_node)
-            in bridge_edges
-        ) or (
-            (to_node, from_node)
-            in bridge_edges
-        )
+        betweenness_score = edge_betweenness.get((from_node, to_node), edge_betweenness.get((to_node, from_node), 0.0))
 
-        betweenness_score = (
-            edge_betweenness.get(
-                (from_node, to_node),
-                edge_betweenness.get(
-                    (to_node, from_node),
-                    0.0,
-                ),
+        criticality_score = betweenness_score * (2.0 if bridge_edge else 1.0)
+
+        if criticality_score < 0.1:
+            continue
+
+        edge_id = edge_data.get("edge_id", f"{u}_{v}")
+
+        existing = aggregated.get(key)
+        if existing is None:
+            aggregated[key] = CriticalInfrastructureEdge(
+                edge_id=edge_id,
+                from_node=u,
+                to_node=v,
+                bridge_edge=bridge_edge,
+                edge_betweenness=betweenness_score,
+                criticality_score=criticality_score,
             )
-        )
+        else:
+            # merge: OR bridge flag, take max betweenness & criticality
+            merged_bridge = existing.bridge_edge or bridge_edge
+            merged_betweenness = max(existing.edge_betweenness, betweenness_score)
+            merged_criticality = max(existing.criticality_score, criticality_score)
 
-        criticality_score = (
-            betweenness_score
-            * (2.0 if bridge_edge else 1.0)
-        )
-
-        if criticality_score >= 0.1:
-
-            critical_edges.append(
-                CriticalInfrastructureEdge(
-                    edge_id=edge_data.get(
-                        "edge_id",
-                        f"{from_node}_{to_node}",
-                    ),
-
-                    from_node=from_node,
-
-                    to_node=to_node,
-
-                    bridge_edge=bridge_edge,
-
-                    edge_betweenness=(
-                        betweenness_score
-                    ),
-
-                    criticality_score=(
-                        criticality_score
-                    ),
-                )
+            aggregated[key] = CriticalInfrastructureEdge(
+                edge_id=existing.edge_id or edge_id,
+                from_node=u,
+                to_node=v,
+                bridge_edge=merged_bridge,
+                edge_betweenness=merged_betweenness,
+                criticality_score=merged_criticality,
             )
 
-    return critical_edges
+    return list(aggregated.values())
 
 
 # =========================================================
@@ -259,52 +238,44 @@ def analyze_topology_vulnerabilities(
         nx.articulation_points(graph)
     )
 
-    vulnerabilities = []
+    vulnerabilities_map: dict[str, TopologyVulnerability] = {}
 
     for node in articulation_points:
-
         degree = graph.degree(node)
 
-        fragmentation_risk = min(
-            degree / 10.0,
-            1.0,
-        )
+        fragmentation_risk = min(degree / 10.0, 1.0)
 
-        severity_level = (
-            "HIGH"
-            if fragmentation_risk >= 0.5
-            else "MODERATE"
-        )
+        severity_level = "HIGH" if fragmentation_risk >= 0.5 else "MODERATE"
 
-        connected_edges = []
+        connected_edges = [f"{node}_{neighbor}" for neighbor in graph.neighbors(node)]
 
-        for neighbor in graph.neighbors(node):
+        vuln_id = f"vulnerability_{node}"
 
-            connected_edges.append(
-                f"{node}_{neighbor}"
-            )
-
-        vulnerabilities.append(
-            TopologyVulnerability(
-                vulnerability_id=(
-                    f"vulnerability_{node}"
-                ),
-
+        existing = vulnerabilities_map.get(vuln_id)
+        if existing is None:
+            vulnerabilities_map[vuln_id] = TopologyVulnerability(
+                vulnerability_id=vuln_id,
                 affected_nodes=[node],
-
                 affected_edges=connected_edges,
-
-                fragmentation_risk=(
-                    fragmentation_risk
-                ),
-
-                severity_level=(
-                    severity_level
-                ),
+                fragmentation_risk=fragmentation_risk,
+                severity_level=severity_level,
             )
-        )
+        else:
+            # merge sets
+            merged_nodes = list(dict.fromkeys(existing.affected_nodes + [node]))
+            merged_edges = list(dict.fromkeys(existing.affected_edges + connected_edges))
+            merged_risk = max(existing.fragmentation_risk, fragmentation_risk)
+            merged_severity = existing.severity_level if existing.severity_level == "HIGH" else severity_level
 
-    return vulnerabilities
+            vulnerabilities_map[vuln_id] = TopologyVulnerability(
+                vulnerability_id=vuln_id,
+                affected_nodes=merged_nodes,
+                affected_edges=merged_edges,
+                fragmentation_risk=merged_risk,
+                severity_level=merged_severity,
+            )
+
+    return list(vulnerabilities_map.values())
 
 
 # =========================================================

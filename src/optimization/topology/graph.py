@@ -152,7 +152,7 @@ def build_topology_nodes(
 
         topology_nodes.append(
             TopologyNode(
-                node_id=bus.id,
+                node_id=int(bus.id),
 
                 voltage_kv=bus.voltage_kv,
 
@@ -186,9 +186,9 @@ def build_topology_edges(
             TopologyEdge(
                 edge_id=line.id,
 
-                from_node=line.from_bus,
+                from_node=int(line.from_bus),
 
-                to_node=line.to_bus,
+                to_node=int(line.to_bus),
 
                 capacity_mva=line.capacity_mva,
 
@@ -223,11 +223,11 @@ def build_candidate_overlays(
                 ),
 
                 from_node=(
-                    candidate.from_bus
+                    str(candidate.from_bus)
                 ),
 
                 to_node=(
-                    candidate.to_bus
+                    str(candidate.to_bus)
                 ),
 
                 capacity_mva=(
@@ -293,7 +293,7 @@ def project_to_networkx(
     for node in topology_graph.nodes:
 
         graph.add_node(
-            node.node_id,
+            str(node.node_id),
 
             voltage_kv=node.voltage_kv,
 
@@ -303,8 +303,8 @@ def project_to_networkx(
     for edge in topology_graph.edges:
 
         graph.add_edge(
-            edge.from_node,
-            edge.to_node,
+            str(edge.from_node),
+            str(edge.to_node),
 
             edge_id=edge.edge_id,
 
@@ -342,8 +342,8 @@ def project_solution_overlay(
     ):
 
         graph.add_edge(
-            expansion.from_bus,
-            expansion.to_bus,
+            str(expansion.from_bus),
+            str(expansion.to_bus),
 
             candidate_id=(
                 expansion.candidate_id

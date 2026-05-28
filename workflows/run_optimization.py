@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 
 from problems.eon_grid_expansion.constraints import (
     BudgetConstraint,
@@ -48,7 +48,7 @@ from src.solvers.classical.solve import (
 
 @dataclass(frozen=True)
 class OptimizationRunConfig:
-    solver_name: str = "cplex"
+    solver_name: str = "highs"
     budget_ratio: float = 0.15
     scenario_id: str = "baseline"
     scenario_name: str = "Baseline"
@@ -124,7 +124,7 @@ def _build_problem(
         scenario_id=config.scenario_id,
         stress_level=config.stress_level,
         num_candidate_lines=len(candidates),
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(UTC),
     )
 
     infrastructure = InfrastructureState(

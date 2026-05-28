@@ -175,7 +175,8 @@ def build_congestion_edge_states(
 
     graph = projection.networkx_graph
 
-    edge_states = []
+    # aggregate by canonical undirected edge key to avoid duplicates
+    aggregated: dict[tuple[str, str], CongestionEdgeState] = {}
 
     for (
         from_node,
@@ -183,47 +184,47 @@ def build_congestion_edge_states(
         edge_data,
     ) in graph.edges(data=True):
 
-        congestion_score = (
-            compute_edge_congestion_score(
-                graph,
-                from_node,
-                to_node,
-            )
+        # ensure canonical ordering (undirected)
+        u, v = sorted([str(from_node), str(to_node)])
+        key = (u, v)
+
+        congestion_score = compute_edge_congestion_score(
+            graph,
+            from_node,
+            to_node,
         )
 
-        utilization_ratio = min(
-            congestion_score * 4.0,
-            1.0,
-        )
+        utilization_ratio = min(congestion_score * 4.0, 1.0)
+        critical = utilization_ratio >= 0.75
 
-        critical = (
-            utilization_ratio >= 0.75
-        )
+        edge_id = edge_data.get("edge_id", f"{u}_{v}")
 
-        edge_states.append(
-            CongestionEdgeState(
-                edge_id=edge_data.get(
-                    "edge_id",
-                    f"{from_node}_{to_node}",
-                ),
-
-                from_node=from_node,
-
-                to_node=to_node,
-
-                utilization_ratio=(
-                    utilization_ratio
-                ),
-
-                congestion_score=(
-                    congestion_score
-                ),
-
+        existing = aggregated.get(key)
+        if existing is None:
+            aggregated[key] = CongestionEdgeState(
+                edge_id=edge_id,
+                from_node=u,
+                to_node=v,
+                utilization_ratio=utilization_ratio,
+                congestion_score=congestion_score,
                 critical=critical,
             )
-        )
+        else:
+            # merge conservatively: take max scores and mark critical if any are critical
+            merged_util = max(existing.utilization_ratio, utilization_ratio)
+            merged_score = max(existing.congestion_score, congestion_score)
+            merged_critical = existing.critical or critical
 
-    return edge_states
+            aggregated[key] = CongestionEdgeState(
+                edge_id=existing.edge_id or edge_id,
+                from_node=u,
+                to_node=v,
+                utilization_ratio=merged_util,
+                congestion_score=merged_score,
+                critical=merged_critical,
+            )
+
+    return list(aggregated.values())
 
 
 # =========================================================
@@ -239,41 +240,25 @@ def identify_congestion_hotspots(
     Identify critical congestion hotspots.
     """
 
-    critical_edges = [
-        edge
-        for edge in edge_states
-        if edge.critical
-    ]
+    critical_edges = [edge for edge in edge_states if edge.critical]
 
     if not critical_edges:
         return []
 
-    average_score = (
-        sum(
-            edge.congestion_score
-            for edge in critical_edges
-        )
-        / len(critical_edges)
-    )
+    # compute an aggregate average score across unique critical edges
+    average_score = sum(edge.congestion_score for edge in critical_edges) / len(critical_edges)
 
-    severity_level = (
-        "HIGH"
-        if average_score >= 0.3
-        else "MODERATE"
-    )
+    severity_level = "HIGH" if average_score >= 0.3 else "MODERATE"
+
+    affected_edges = [edge.edge_id for edge in critical_edges]
+
+    # ensure uniqueness
+    affected_edges = list(dict.fromkeys(affected_edges))
 
     hotspot = CongestionHotspot(
         hotspot_id="primary_hotspot",
-
-        affected_edges=[
-            edge.edge_id
-            for edge in critical_edges
-        ],
-
-        average_congestion_score=(
-            average_score
-        ),
-
+        affected_edges=affected_edges,
+        average_congestion_score=average_score,
         severity_level=severity_level,
     )
 

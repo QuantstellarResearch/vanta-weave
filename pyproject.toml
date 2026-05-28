@@ -8,8 +8,10 @@ dependencies = [
     "cplex>=22.2.0.0",
     "dimod>=0.12.21",
     "dwave-ocean-sdk>=9.3.0",
+    "geopy>=2.4.1",
     "highspy>=1.14.0",
     "ipykernel>=7.2.0",
+    "joblib>=1.5.3",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.9",
     "mitiq>=0.0.0",
@@ -22,6 +24,7 @@ dependencies = [
     "pyomo>=6.10.0",
     "qiskit>=2.4.1",
     "scipy>=1.17.1",
+    "seaborn>=0.13.2",
     "simbench>=1.6.1",
     "vanta-lattice",
 ]

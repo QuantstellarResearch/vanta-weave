@@ -1,0 +1,456 @@
+{
+  "generator": "generate_candidates",
+  "count": 50,
+  "candidates": [
+    {
+      "candidate_id": "cand_parallel_14_16_cap11880_c414_hae0123",
+      "from_bus": "14",
+      "to_bus": "16",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_22_24_cap11880_c414_hef94ba",
+      "from_bus": "22",
+      "to_bus": "24",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_24_26_cap11880_c414_haaf7f6",
+      "from_bus": "24",
+      "to_bus": "26",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_25_29_cap11880_c331_h41b49c",
+      "from_bus": "25",
+      "to_bus": "29",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_33_36_cap11880_c414_h980a6c",
+      "from_bus": "33",
+      "to_bus": "36",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_37_64_cap11880_c331_h356a82",
+      "from_bus": "37",
+      "to_bus": "64",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_3_4_cap11880_c414_hf4ebbf",
+      "from_bus": "3",
+      "to_bus": "4",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_48_65_cap11880_c414_v0_h534daa",
+      "from_bus": "48",
+      "to_bus": "65",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_48_65_cap11880_c414_v1_h534daa",
+      "from_bus": "48",
+      "to_bus": "65",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_59_60_cap11880_c414_h20e9d5",
+      "from_bus": "59",
+      "to_bus": "60",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_62_63_cap11880_c331_h692783",
+      "from_bus": "62",
+      "to_bus": "63",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_63_64_cap11880_c331_ha047ae",
+      "from_bus": "63",
+      "to_bus": "64",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_68_69_cap11880_c414_hf83bb2",
+      "from_bus": "68",
+      "to_bus": "69",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_68_74_cap11880_c414_h8959b7",
+      "from_bus": "68",
+      "to_bus": "74",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_76_79_cap11880_c414_h27c6d6",
+      "from_bus": "76",
+      "to_bus": "79",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_7_29_cap11880_c331_h36c98e",
+      "from_bus": "7",
+      "to_bus": "29",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_7_8_cap11880_c331_h8974c8",
+      "from_bus": "7",
+      "to_bus": "8",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_87_88_cap11880_c414_h5ce888",
+      "from_bus": "87",
+      "to_bus": "88",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_88_89_cap11880_c414_h1a4b7e",
+      "from_bus": "88",
+      "to_bus": "89",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_88_91_cap11880_c414_h105318",
+      "from_bus": "88",
+      "to_bus": "91",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_parallel_8_9_cap11880_c331_hbce51e",
+      "from_bus": "8",
+      "to_bus": "9",
+      "capacity_mva": 11880.000000000002,
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_parallel_99_102_cap11880_c414_h2e3cee",
+      "from_bus": "99",
+      "to_bus": "102",
+      "capacity_mva": 11880.0,
+      "build_cost": 4.141860626795141,
+      "length_km": 1.0,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_24_79_cap500_c78295_hf2f2cb",
+      "from_bus": "79",
+      "to_bus": "24",
+      "capacity_mva": 500.0,
+      "build_cost": 782.9479046053577,
+      "length_km": 782.9479046053577,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_24_88_cap500_c116102_hac3c71",
+      "from_bus": "88",
+      "to_bus": "24",
+      "capacity_mva": 500.0,
+      "build_cost": 1161.0211576471518,
+      "length_km": 1161.0211576471518,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_25_58_cap1000_c98038_he28411",
+      "from_bus": "58",
+      "to_bus": "25",
+      "capacity_mva": 1000.0,
+      "build_cost": 980.3829247005932,
+      "length_km": 490.1914623502966,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_25_79_cap1000_c145864_h4bb35c",
+      "from_bus": "79",
+      "to_bus": "25",
+      "capacity_mva": 1000.0,
+      "build_cost": 1458.638767562137,
+      "length_km": 729.3193837810685,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_25_88_cap1000_c226668_h7bc2a2",
+      "from_bus": "88",
+      "to_bus": "25",
+      "capacity_mva": 1000.0,
+      "build_cost": 2266.684511505195,
+      "length_km": 1133.3422557525976,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_48_58_cap500_c26751_h655b5c",
+      "from_bus": "58",
+      "to_bus": "48",
+      "capacity_mva": 500.0,
+      "build_cost": 267.5056518581972,
+      "length_km": 267.5056518581972,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_48_79_cap500_c35554_hb200d6",
+      "from_bus": "79",
+      "to_bus": "48",
+      "capacity_mva": 500.0,
+      "build_cost": 355.5444542437955,
+      "length_km": 355.5444542437955,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_48_88_cap500_c69350_h5aa908",
+      "from_bus": "88",
+      "to_bus": "48",
+      "capacity_mva": 500.0,
+      "build_cost": 693.4991546171381,
+      "length_km": 693.4991546171381,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_58_64_cap1000_c75160_hcf6e3e",
+      "from_bus": "58",
+      "to_bus": "64",
+      "capacity_mva": 1000.0,
+      "build_cost": 751.5957134183059,
+      "length_km": 375.79785670915294,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_58_65_cap500_c25338_hb7eae7",
+      "from_bus": "58",
+      "to_bus": "65",
+      "capacity_mva": 500.0,
+      "build_cost": 253.3789701678098,
+      "length_km": 253.3789701678098,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_58_79_cap500_c60998_h60d68b",
+      "from_bus": "79",
+      "to_bus": "58",
+      "capacity_mva": 500.0,
+      "build_cost": 609.9788741193513,
+      "length_km": 609.9788741193513,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_58_88_cap500_c87674_hfefe81",
+      "from_bus": "88",
+      "to_bus": "58",
+      "capacity_mva": 500.0,
+      "build_cost": 876.7403968767976,
+      "length_km": 876.7403968767976,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_64_79_cap1000_c84579_heff781",
+      "from_bus": "79",
+      "to_bus": "64",
+      "capacity_mva": 1000.0,
+      "build_cost": 845.7887043750992,
+      "length_km": 422.8943521875496,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_64_88_cap1000_c164909_hcf7119",
+      "from_bus": "88",
+      "to_bus": "64",
+      "capacity_mva": 1000.0,
+      "build_cost": 1649.094833331056,
+      "length_km": 824.547416665528,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_65_79_cap500_c44232_h6369b7",
+      "from_bus": "79",
+      "to_bus": "65",
+      "capacity_mva": 500.0,
+      "build_cost": 442.32053623443625,
+      "length_km": 442.32053623443625,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_65_88_cap500_c80454_h517b46",
+      "from_bus": "88",
+      "to_bus": "65",
+      "capacity_mva": 500.0,
+      "build_cost": 804.5387883863646,
+      "length_km": 804.5387883863646,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_79_88_cap500_c42741_h4da517",
+      "from_bus": "79",
+      "to_bus": "88",
+      "capacity_mva": 500.0,
+      "build_cost": 427.40812607197864,
+      "length_km": 427.40812607197864,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_79_99_cap500_c26769_h2b4217",
+      "from_bus": "79",
+      "to_bus": "99",
+      "capacity_mva": 500.0,
+      "build_cost": 267.6863660272739,
+      "length_km": 267.6863660272739,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_88_99_cap500_c30077_hb2240e",
+      "from_bus": "88",
+      "to_bus": "99",
+      "capacity_mva": 500.0,
+      "build_cost": 300.77148574748935,
+      "length_km": 300.77148574748935,
+      "voltage_kv": 138.0
+    },
+    {
+      "candidate_id": "cand_shortcut_9_24_cap1000_c83484_h95103b",
+      "from_bus": "9",
+      "to_bus": "24",
+      "capacity_mva": 1000.0,
+      "build_cost": 834.8413472744755,
+      "length_km": 417.42067363723777,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_25_cap1000_c78214_h0a0cf0",
+      "from_bus": "9",
+      "to_bus": "25",
+      "capacity_mva": 1000.0,
+      "build_cost": 782.1430674376005,
+      "length_km": 391.07153371880025,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_shortcut_9_48_cap1000_c170915_h088c11",
+      "from_bus": "9",
+      "to_bus": "48",
+      "capacity_mva": 1000.0,
+      "build_cost": 1709.1500235268638,
+      "length_km": 854.5750117634319,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_58_cap1000_c165639_h811ee4",
+      "from_bus": "9",
+      "to_bus": "58",
+      "capacity_mva": 1000.0,
+      "build_cost": 1656.3894349542825,
+      "length_km": 828.1947174771412,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_64_cap1000_c139566_habecdb",
+      "from_bus": "9",
+      "to_bus": "64",
+      "capacity_mva": 1000.0,
+      "build_cost": 1395.6643344478603,
+      "length_km": 697.8321672239301,
+      "voltage_kv": 345.0
+    },
+    {
+      "candidate_id": "cand_shortcut_9_65_cap1000_c148025_h568a5a",
+      "from_bus": "9",
+      "to_bus": "65",
+      "capacity_mva": 1000.0,
+      "build_cost": 1480.2460300543105,
+      "length_km": 740.1230150271552,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_79_cap1000_c222133_hb08fe8",
+      "from_bus": "79",
+      "to_bus": "9",
+      "capacity_mva": 1000.0,
+      "build_cost": 2221.3320303111173,
+      "length_km": 1110.6660151555586,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_88_cap1000_c304446_h854b84",
+      "from_bus": "88",
+      "to_bus": "9",
+      "capacity_mva": 1000.0,
+      "build_cost": 3044.4633574219856,
+      "length_km": 1522.2316787109928,
+      "voltage_kv": 241.5
+    },
+    {
+      "candidate_id": "cand_shortcut_9_99_cap1000_c271283_h9b0a1f",
+      "from_bus": "9",
+      "to_bus": "99",
+      "capacity_mva": 1000.0,
+      "build_cost": 2712.83203916835,
+      "length_km": 1356.416019584175,
+      "voltage_kv": 241.5
+    }
+  ]
+}

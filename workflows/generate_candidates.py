@@ -9,6 +9,16 @@ from problems.eon_grid_expansion.decision_space import (
     DecisionSpace,
 )
 
+from src.utils.candidate_utils import (
+    make_candidate_id,
+    canonical_base_key,
+    sort_key_for_variant,
+)
+import json
+from pathlib import Path
+
+from src.utils.distance_length import tinh_khoang_cach_bus
+
 
 @dataclass(frozen=True)
 class CandidateGenerationConfig:
@@ -48,34 +58,133 @@ def generate_candidates(
 
     existing_edges = _build_existing_edges(lines)
 
-    candidates: list[CandidateLine] = []
+    # Collect raw candidate dicts from multiple generators
+    raw_candidates: list[dict] = []
 
-    candidates.extend(
-        _build_parallel_candidates(
-            line_flows=line_flows,
-            line_by_id=line_by_id,
-            bus_voltage_by_id=bus_voltage_by_id,
-            existing_edges=existing_edges,
-            config=config,
-        )
-    )
-
-    if len(candidates) < config.max_candidates:
-        candidates.extend(
-            _build_shortcut_candidates(
-                loads=loads,
-                generators=generators,
+    raw_candidates.extend(
+        [
+            {
+                "kind": "parallel",
+                "from_bus": str(c.from_bus),
+                "to_bus": str(c.to_bus),
+                "capacity_mva": c.capacity_mva,
+                "build_cost": c.build_cost,
+                "length_km": c.length_km,
+                "voltage_kv": c.voltage_kv,
+            }
+            for c in _build_parallel_candidates(
+                line_flows=line_flows,
+                line_by_id=line_by_id,
                 bus_voltage_by_id=bus_voltage_by_id,
                 existing_edges=existing_edges,
                 config=config,
-                remaining=(
-                    config.max_candidates
-                    - len(candidates)
-                ),
             )
+        ]
+    )
+
+    if len(raw_candidates) < config.max_candidates:
+        raw_candidates.extend(
+            [
+                {
+                    "kind": "shortcut",
+                    "from_bus": str(c.from_bus),
+                    "to_bus": str(c.to_bus),
+                    "capacity_mva": c.capacity_mva,
+                    "build_cost": c.build_cost,
+                    "length_km": c.length_km,
+                    "voltage_kv": c.voltage_kv,
+                }
+                for c in _build_shortcut_candidates(
+                    data=data,
+                    loads=loads,
+                    generators=generators,
+                    bus_voltage_by_id=bus_voltage_by_id,
+                    existing_edges=existing_edges,
+                    config=config,
+                    remaining=(
+                        config.max_candidates
+                        - len(raw_candidates)
+                    ),
+                )
+            ]
         )
 
-    return candidates[: config.max_candidates]
+    # Group by canonical base key to deduplicate and prepare variant lists
+    groups: dict = {}
+    for item in raw_candidates:
+        key = canonical_base_key(
+            item["kind"],
+            item["from_bus"],
+            item["to_bus"],
+            item["capacity_mva"],
+            item["build_cost"],
+        )
+        groups.setdefault(key, []).append(item)
+
+    # For each group, sort variants deterministically and assign variant indices
+    canonical_candidates: list[CandidateLine] = []
+    for key, variants in groups.items():
+        variants_sorted = sorted(variants, key=sort_key_for_variant)
+        for idx, var in enumerate(variants_sorted):
+            candidate_id = make_candidate_id(
+                kind=var["kind"],
+                from_bus=var["from_bus"],
+                to_bus=var["to_bus"],
+                capacity_mva=var["capacity_mva"],
+                build_cost=var["build_cost"],
+                length_km=var.get("length_km"),
+                variant_index=(idx if len(variants_sorted) > 1 else None),
+                add_hash=True,
+            )
+
+            canonical_candidates.append(
+                CandidateLine(
+                    candidate_id=candidate_id,
+                    from_bus=var["from_bus"],
+                    to_bus=var["to_bus"],
+                    capacity_mva=var["capacity_mva"],
+                    build_cost=var["build_cost"],
+                    length_km=var["length_km"],
+                    voltage_kv=var["voltage_kv"],
+                )
+            )
+
+    # Keep deterministic order: sort by candidate_id
+    canonical_candidates = sorted(canonical_candidates, key=lambda c: c.candidate_id)
+
+    # Trim to max_candidates
+    final = canonical_candidates[: config.max_candidates]
+
+    return final
+
+
+def write_candidate_list(
+    candidates: list[CandidateLine],
+    output_path: Path = Path("outputs/candidate_list.json"),
+) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    payload = {
+        "generator": "generate_candidates",
+        "count": len(candidates),
+        "candidates": [
+            {
+                "candidate_id": c.candidate_id,
+                "from_bus": c.from_bus,
+                "to_bus": c.to_bus,
+                "capacity_mva": c.capacity_mva,
+                "build_cost": c.build_cost,
+                "length_km": c.length_km,
+                "voltage_kv": c.voltage_kv,
+            }
+            for c in candidates
+        ],
+    }
+
+    output_path.write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
 
 
 def build_decision_space(
@@ -135,14 +244,10 @@ def _build_parallel_candidates(
             ),
         )
 
-        candidate_id = (
-            f"cand_parallel_{from_bus}_{to_bus}_"
-            f"{len(candidates)}"
-        )
-
+        # Note: candidate_id generation is deferred to top-level to ensure deterministic ids
         candidates.append(
             CandidateLine(
-                candidate_id=candidate_id,
+                candidate_id="",
                 from_bus=str(from_bus),
                 to_bus=str(to_bus),
                 capacity_mva=capacity_mva,
@@ -157,6 +262,7 @@ def _build_parallel_candidates(
 
 def _build_shortcut_candidates(
     *,
+    data,
     loads,
     generators,
     bus_voltage_by_id,
@@ -203,7 +309,9 @@ def _build_shortcut_candidates(
             to_bus,
             bus_voltage_by_id,
         )
-        length_km = 1.0
+        length_km = tinh_khoang_cach_bus(data, from_bus, to_bus)
+        if length_km is None:
+            length_km = 1.0
         capacity_mva = _default_capacity(
             voltage_kv
         )
@@ -213,14 +321,9 @@ def _build_shortcut_candidates(
             max_current_ka=None,
         )
 
-        candidate_id = (
-            f"cand_shortcut_{from_bus}_{to_bus}_"
-            f"{len(candidates)}"
-        )
-
         candidates.append(
             CandidateLine(
-                candidate_id=candidate_id,
+                candidate_id="",
                 from_bus=str(from_bus),
                 to_bus=str(to_bus),
                 capacity_mva=capacity_mva,

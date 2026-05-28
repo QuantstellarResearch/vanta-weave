@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import csv
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
 from datasets.load_ieee118 import load_data
 from workflows.generate_candidates import (
     CandidateGenerationConfig,
     generate_candidates,
+    write_candidate_list,
 )
 from workflows.run_optimization import (
     OptimizationRunConfig,
@@ -20,7 +22,39 @@ JSON_PATH = OUTPUT_DIR / "selected_lines.json"
 CSV_PATH = OUTPUT_DIR / "selected_lines.csv"
 
 
-def run_eon_workflow() -> dict:
+def write_workflow_manifest(
+    *,
+    output_path: Path,
+    problem_id: str,
+    scenario_id: str,
+    scenario_name: str,
+    solver_name: str,
+    budget_ratio: float,
+    candidate_count: int,
+    run_dir: Path,
+) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    payload = {
+        "problem_id": problem_id,
+        "scenario_id": scenario_id,
+        "scenario_name": scenario_name,
+        "solver_name": solver_name,
+        "budget_ratio": budget_ratio,
+        "candidate_count": candidate_count,
+        "generated_at": datetime.now(UTC).isoformat(),
+        "run_dir": str(run_dir),
+    }
+
+    output_path.write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+
+
+def run_eon_workflow(
+    solver_name: str = "highs",
+) -> dict:
     data = load_data()
 
     candidates = generate_candidates(
@@ -28,10 +62,25 @@ def run_eon_workflow() -> dict:
         config=CandidateGenerationConfig(),
     )
 
+    write_candidate_list(candidates)
+
+    write_workflow_manifest(
+        output_path=OUTPUT_DIR / "workflow_manifest.json",
+        problem_id="eon_grid_expansion",
+        scenario_id="baseline",
+        scenario_name="Baseline",
+        solver_name=solver_name,
+        budget_ratio=0.15,
+        candidate_count=len(candidates),
+        run_dir=OUTPUT_DIR,
+    )
+
     result = run_optimization(
         data=data,
         candidates=candidates,
-        config=OptimizationRunConfig(),
+        config=OptimizationRunConfig(
+            solver_name=solver_name,
+        ),
     )
 
     selected = _select_candidates(

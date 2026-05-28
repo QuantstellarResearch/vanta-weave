@@ -4,11 +4,6 @@ Optimization objective semantics for the E.ON grid expansion problem.
 This module defines declarative optimization goals used by the
 GridExpansionProblem abstraction.
 
-IMPORTANT:
-- This layer is semantic-only.
-- No Pyomo/QUBO expressions belong here.
-- No solver-specific logic belongs here.
-- Mathematical encoding is handled in formulation layers.
 """
 
 from dataclasses import dataclass
