@@ -35,6 +35,99 @@ def run_topology_report(candidate_list_path: str = 'outputs/candidate_list.json'
         "selected": selected,
     }
 
+    # Try to import analyzers from src/optimization/topology
+    metrics_result = {}
+    viz_written = False
+    try:
+        # Local import because this module may be heavy
+        from src.optimization.topology import graph as topology_graph
+        from src.optimization.topology import congestion as topology_congestion
+        from src.optimization.topology import resilience as topology_resilience
+        from src.optimization.topology import metrics as topology_metrics
+
+        # Attempt to build operational graph if mapped data available
+        try:
+            infrastructure = None
+            if mapped_data_path:
+                with open(mapped_data_path, 'r', encoding='utf-8') as f:
+                    infrastructure = json.load(f)
+            op_graph = topology_graph.build_operational_graph(infrastructure, candidates)
+            projection = topology_graph.project_solution_overlay(op_graph, solution)
+
+            cong = topology_congestion.analyze_topology_congestion(projection, solution)
+            res = topology_resilience.analyze_network_resilience(projection, solution)
+            cent = topology_metrics.compute_topology_centrality(projection)
+
+            metrics_result = {
+                "congestion": cong if isinstance(cong, dict) else getattr(cong, '_asdict', lambda: cong)(),
+                "resilience": res if isinstance(res, dict) else getattr(res, '_asdict', lambda: res)(),
+                "centrality": cent,
+            }
+
+            # try drawing using projection -> networkx
+            try:
+                G = projection.to_networkx()
+                import networkx as nx
+                import matplotlib.pyplot as plt
+
+                pos = {n: (d.get('x', i), d.get('y', i)) for i, (n, d) in enumerate(G.nodes(data=True))}
+                plt.figure(figsize=(12, 8))
+                nx.draw(G, pos=pos, node_size=20, edge_color='grey')
+                # highlight selected candidate edges if available
+                sel_edges = []
+                for u, v, data in G.edges(data=True):
+                    if data.get('candidate_id') in selected:
+                        sel_edges.append((u, v))
+                if sel_edges:
+                    nx.draw_networkx_edges(G, pos=pos, edgelist=sel_edges, edge_color='red', width=2)
+                plt.savefig(Path(out_dir) / 'topology_viz.png')
+                plt.close()
+                viz_written = True
+            except Exception:
+                LOG.exception("Visualization using projection failed")
+
+        except Exception:
+            LOG.exception("Topology graph build/analysis failed; falling back to minimal viz")
+            # fallthrough to minimal viz below
+
+    except Exception:
+        LOG.info("Topology analyzers not available; using minimal visualization fallback")
+
+    # If analyzers unavailable or failed, produce a minimal NetworkX visualization from candidate specs
+    if not viz_written:
+        try:
+            import networkx as nx
+            import matplotlib.pyplot as plt
+
+            G = nx.Graph()
+            for c in candidates:
+                spec = c.get('spec', {})
+                u = spec.get('from') or spec.get('f') or f"{c['candidate_id']}_u"
+                v = spec.get('to') or spec.get('t') or f"{c['candidate_id']}_v"
+                G.add_node(u)
+                G.add_node(v)
+                G.add_edge(u, v, candidate_id=c['candidate_id'])
+
+            pos = None
+            try:
+                pos = nx.spring_layout(G, seed=0)
+            except Exception:
+                pos = {n: (i * 0.1, i * 0.1) for i, n in enumerate(G.nodes())}
+
+            plt.figure(figsize=(12, 8))
+            nx.draw(G, pos=pos, node_size=50, edge_color='grey')
+            sel_edges = [e for e in G.edges() if G.edges[e].get('candidate_id') in selected]
+            if sel_edges:
+                nx.draw_networkx_edges(G, pos=pos, edgelist=sel_edges, edge_color='red', width=2)
+            plt.savefig(out_dir_p / 'topology_viz.png')
+            plt.close()
+            viz_written = True
+            metrics_result = metrics_result or {}
+        except Exception:
+            LOG.exception("Minimal visualization fallback failed")
+
+    report['metrics'] = metrics_result
+
     # Write JSON and Markdown
     with open(out_dir_p / 'topology_report.json', 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2)
