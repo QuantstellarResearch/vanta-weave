@@ -137,12 +137,12 @@ def run_topology_report(candidate_list_path: str = 'outputs/candidate_list.json'
         f.write(md)
 
     LOG.info("Wrote topology report to %s", out_dir_p)
-    # Write provenance
+    # Write provenance (timezone-aware timestamp)
     try:
         import hashlib
         import subprocess
         import sys
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         def file_sha256(path: Path) -> str:
             h = hashlib.sha256()
@@ -166,7 +166,7 @@ def run_topology_report(candidate_list_path: str = 'outputs/candidate_list.json'
             git_rev = None
 
         prov = {
-            "timestamp": datetime.utcnow().isoformat() + 'Z',
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "git_commit": git_rev,
             "python_version": sys.version,
             "inputs": inputs,
@@ -193,5 +193,8 @@ if __name__ == '__main__':
     p.add_argument('--candidate-list', default='outputs/candidate_list.json')
     p.add_argument('--selected', default='outputs/selected_lines.json')
     p.add_argument('--out', default='outputs')
+    p.add_argument('--validate-top-n', default=0, type=int,
+                   help='If >0, run pandapower AC validation for top-N candidates (disabled by default)')
     args = p.parse_args()
-    run_topology_report(candidate_list_path=args.candidate_list, selected_path=args.selected, out_dir=args.out)
+    run_topology_report(candidate_list_path=args.candidate_list, selected_path=args.selected, out_dir=args.out,
+                        validate_top_n=args.validate_top_n)
