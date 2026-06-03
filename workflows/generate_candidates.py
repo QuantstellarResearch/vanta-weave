@@ -22,7 +22,8 @@ from src.utils.distance_length import tinh_khoang_cach_bus
 
 @dataclass(frozen=True)
 class CandidateGenerationConfig:
-    overload_threshold: float = 1.0
+    overload_threshold: float = 70.0
+    planning_stress_factor : float = 30.0
     parallel_capacity_scale: float = 1.2
     top_k_buses: int = 10
     max_candidates: int = 50
@@ -214,7 +215,11 @@ def _build_parallel_candidates(
     candidates: list[CandidateLine] = []
 
     for flow in line_flows:
-        if flow.loading_percent < config.overload_threshold:
+        effective_loading = (
+                flow.loading_percent
+                * config.planning_stress_factor
+        )
+        if effective_loading < config.overload_threshold:
             continue
 
         line = line_by_id.get(flow.line_id)
