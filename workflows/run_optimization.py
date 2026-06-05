@@ -44,6 +44,7 @@ from src.solvers.classical.solve import (
     OptimizationSolveResult,
     solve_optimization_problem,
 )
+from problems.eon_grid_expansion.analytics import CandidateAnalytics
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,10 @@ def run_optimization(
     *,
     data,
     candidates: list[CandidateLine],
+    candidate_severity_reduction_map: dict[
+        str,
+        float,
+    ],
     config: OptimizationRunConfig | None = None,
 ) -> OptimizationSolveResult:
     """
@@ -76,6 +81,7 @@ def run_optimization(
     problem = _build_problem(
         data=data,
         candidates=candidates,
+        candidate_severity_reduction_map=candidate_severity_reduction_map,
         budget=budget,
         config=config,
     )
@@ -112,6 +118,7 @@ def _build_problem(
     data,
     candidates: list[CandidateLine],
     budget: float,
+    candidate_severity_reduction_map,
     config: OptimizationRunConfig,
 ) -> GridExpansionProblem:
     mapped = data.mapped
@@ -125,6 +132,10 @@ def _build_problem(
         stress_level=config.stress_level,
         num_candidate_lines=len(candidates),
         created_at=datetime.now(UTC),
+    )
+    analytics = CandidateAnalytics(
+        overload_severity_reduction=
+        candidate_severity_reduction_map
     )
 
     infrastructure = InfrastructureState(
@@ -187,6 +198,7 @@ def _build_problem(
         binary_constraint=binary_constraint,
         scenario=scenario,
         objectives=objectives,
+        analytics=analytics,
     )
 
 

@@ -23,9 +23,15 @@ from src.utils.distance_length import tinh_khoang_cach_bus
 @dataclass(frozen=True)
 class CandidateGenerationConfig:
     overload_threshold: float = 70.0
-    planning_stress_factor : float = 30.0
+    planning_stress_factor: float = 30.0
+
     parallel_capacity_scale: float = 1.2
+
     top_k_buses: int = 10
+
+    top_congested_lines: int = 10
+    relief_neighbors_per_side: int = 2
+
     max_candidates: int = 50
 
 
@@ -68,10 +74,9 @@ def generate_candidates(
                 "kind": "parallel",
                 "from_bus": str(c.from_bus),
                 "to_bus": str(c.to_bus),
-                "capacity_mva": c.capacity_mva,
                 "build_cost": c.build_cost,
                 "length_km": c.length_km,
-                "voltage_kv": c.voltage_kv,
+                "reference_line_id": c.reference_line_id,
             }
             for c in _build_parallel_candidates(
                 line_flows=line_flows,
@@ -90,15 +95,16 @@ def generate_candidates(
                     "kind": "shortcut",
                     "from_bus": str(c.from_bus),
                     "to_bus": str(c.to_bus),
-                    "capacity_mva": c.capacity_mva,
                     "build_cost": c.build_cost,
                     "length_km": c.length_km,
-                    "voltage_kv": c.voltage_kv,
+                    "reference_line_id": c.reference_line_id,
                 }
                 for c in _build_shortcut_candidates(
                     data=data,
                     loads=loads,
                     generators=generators,
+                    buses=buses,
+                    lines=lines,
                     bus_voltage_by_id=bus_voltage_by_id,
                     existing_edges=existing_edges,
                     config=config,
@@ -110,6 +116,32 @@ def generate_candidates(
             ]
         )
 
+    if len(raw_candidates) < config.max_candidates:
+        raw_candidates.extend(
+            [
+                {
+                    "kind": "relief",
+                    "from_bus": str(c.from_bus),
+                    "to_bus": str(c.to_bus),
+                    "build_cost": c.build_cost,
+                    "length_km": c.length_km,
+                    "reference_line_id": c.reference_line_id,
+                }
+                for c in _build_congestion_relief_candidates(
+                data=data,
+                line_flows=line_flows,
+                lines=lines,
+                bus_voltage_by_id=bus_voltage_by_id,
+                existing_edges=existing_edges,
+                config=config,
+                remaining=(
+                        config.max_candidates
+                        - len(raw_candidates)
+                ),
+            )
+            ]
+        )
+
     # Group by canonical base key to deduplicate and prepare variant lists
     groups: dict = {}
     for item in raw_candidates:
@@ -117,7 +149,7 @@ def generate_candidates(
             item["kind"],
             item["from_bus"],
             item["to_bus"],
-            item["capacity_mva"],
+            item["reference_line_id"],
             item["build_cost"],
         )
         groups.setdefault(key, []).append(item)
@@ -131,7 +163,7 @@ def generate_candidates(
                 kind=var["kind"],
                 from_bus=var["from_bus"],
                 to_bus=var["to_bus"],
-                capacity_mva=var["capacity_mva"],
+                reference_line_id=var["reference_line_id"],
                 build_cost=var["build_cost"],
                 length_km=var.get("length_km"),
                 variant_index=(idx if len(variants_sorted) > 1 else None),
@@ -143,10 +175,9 @@ def generate_candidates(
                     candidate_id=candidate_id,
                     from_bus=var["from_bus"],
                     to_bus=var["to_bus"],
-                    capacity_mva=var["capacity_mva"],
                     build_cost=var["build_cost"],
                     length_km=var["length_km"],
-                    voltage_kv=var["voltage_kv"],
+                    reference_line_id=var["reference_line_id"],
                 )
             )
 
@@ -173,10 +204,8 @@ def write_candidate_list(
                 "candidate_id": c.candidate_id,
                 "from_bus": c.from_bus,
                 "to_bus": c.to_bus,
-                "capacity_mva": c.capacity_mva,
                 "build_cost": c.build_cost,
                 "length_km": c.length_km,
-                "voltage_kv": c.voltage_kv,
             }
             for c in candidates
         ],
@@ -202,6 +231,117 @@ def _build_existing_edges(lines) -> set[tuple[int, int]]:
         edges.add((line.from_bus, line.to_bus))
         edges.add((line.to_bus, line.from_bus))
     return edges
+
+def _build_bus_lookup(
+    buses,
+) -> dict[int, object]:
+
+    return {
+        int(bus.id): bus
+        for bus in buses
+        if bus.id is not None
+    }
+
+
+def _build_line_lookup(
+    lines,
+) -> dict[int, object]:
+
+    return {
+        int(line.id): line
+        for line in lines
+        if line.id is not None
+    }
+
+
+def _assign_parallel_reference_line(
+    line,
+) -> int:
+
+    if line.id is None:
+        raise ValueError(
+            "Parallel candidate requires "
+            "a valid line id."
+        )
+
+    return int(line.id)
+
+
+def _assign_relief_reference_line(
+    flow,
+) -> int:
+
+    return int(flow.line_id)
+
+
+def _assign_shortcut_reference_line(
+    *,
+    buses,
+    lines,
+    from_bus: int,
+    to_bus: int,
+) -> int:
+
+    bus_lookup = _build_bus_lookup(
+        buses
+    )
+
+    target_voltage = max(
+        float(
+            bus_lookup[from_bus]
+            .voltage_kv
+        ),
+        float(
+            bus_lookup[to_bus]
+            .voltage_kv
+        ),
+    )
+
+    best_line = None
+    best_score = float("inf")
+
+    for line in lines:
+
+        if (
+            line.from_bus is None
+            or line.to_bus is None
+        ):
+            continue
+
+        from_voltage = float(
+            bus_lookup[
+                line.from_bus
+            ].voltage_kv
+        )
+
+        to_voltage = float(
+            bus_lookup[
+                line.to_bus
+            ].voltage_kv
+        )
+
+        line_voltage = max(
+            from_voltage,
+            to_voltage,
+        )
+
+        score = abs(
+            line_voltage
+            - target_voltage
+        )
+
+        if score < best_score:
+
+            best_score = score
+            best_line = line
+
+    if best_line is None:
+        raise ValueError(
+            "Unable to find "
+            "reference line."
+        )
+
+    return int(best_line.id)
 
 
 def _build_parallel_candidates(
@@ -232,15 +372,19 @@ def _build_parallel_candidates(
         if (from_bus, to_bus) not in existing_edges:
             existing_edges.add((from_bus, to_bus))
 
-        capacity_mva = _safe_capacity(line) * (
-            config.parallel_capacity_scale
+        reference_line_id = (
+            _assign_parallel_reference_line(
+                line
+            )
         )
-        voltage_kv = _estimate_voltage_kv(
-            from_bus,
-            to_bus,
-            bus_voltage_by_id,
-        )
+
         length_km = getattr(line, "length_km", 1.0)
+
+        voltage_kv = max(
+            float(bus_voltage_by_id[from_bus]),
+            float(bus_voltage_by_id[to_bus]),
+        )
+
         build_cost = _estimate_cost(
             length_km=length_km,
             voltage_kv=voltage_kv,
@@ -253,12 +397,12 @@ def _build_parallel_candidates(
         candidates.append(
             CandidateLine(
                 candidate_id="",
-                from_bus=str(from_bus),
-                to_bus=str(to_bus),
-                capacity_mva=capacity_mva,
+                from_bus=from_bus,
+                to_bus=to_bus,
+                reference_line_id=
+                    reference_line_id,
                 build_cost=build_cost,
                 length_km=length_km,
-                voltage_kv=voltage_kv,
             )
         )
 
@@ -268,6 +412,8 @@ def _build_parallel_candidates(
 def _build_shortcut_candidates(
     *,
     data,
+    buses,
+    lines,
     loads,
     generators,
     bus_voltage_by_id,
@@ -309,63 +455,168 @@ def _build_shortcut_candidates(
         existing_edges.add((from_bus, to_bus))
         existing_edges.add((to_bus, from_bus))
 
-        voltage_kv = _estimate_voltage_kv(
-            from_bus,
-            to_bus,
-            bus_voltage_by_id,
+        reference_line_id = (
+            _assign_shortcut_reference_line(
+                buses=buses,
+                lines=lines,
+                from_bus=from_bus,
+                to_bus=to_bus,
+            )
         )
         length_km = tinh_khoang_cach_bus(data, from_bus, to_bus)
         if length_km is None:
             length_km = 1.0
-        capacity_mva = _default_capacity(
-            voltage_kv
+
+        reference_line = next(
+            line
+            for line in lines
+            if line.id
+            == reference_line_id
         )
+
+        reference_voltage = (
+            _get_reference_voltage(
+                reference_line=reference_line,
+                bus_voltage_by_id=
+                bus_voltage_by_id,
+            )
+        )
+
         build_cost = _estimate_cost(
             length_km=length_km,
-            voltage_kv=voltage_kv,
+            voltage_kv=reference_voltage,
             max_current_ka=None,
         )
 
         candidates.append(
             CandidateLine(
                 candidate_id="",
-                from_bus=str(from_bus),
-                to_bus=str(to_bus),
-                capacity_mva=capacity_mva,
+                from_bus=from_bus,
+                to_bus=to_bus,
+                reference_line_id=
+                    reference_line_id,
                 build_cost=build_cost,
                 length_km=length_km,
-                voltage_kv=voltage_kv,
             )
         )
 
     return candidates
 
+def _build_congestion_relief_candidates(
+    *,
+    data,
+    line_flows,
+    lines,
+    bus_voltage_by_id,
+    existing_edges,
+    config: CandidateGenerationConfig,
+    remaining: int,
+) -> list[CandidateLine]:
 
-def _safe_capacity(line) -> float:
-    return float(
-        getattr(line, "capacity_mva", 0.0)
-        or 0.0
-    )
+    candidates: list[CandidateLine] = []
 
+    adjacency = _build_bus_adjacency(lines)
 
-def _default_capacity(voltage_kv: float) -> float:
-    if voltage_kv >= 220.0:
-        return 1000.0
-    return 500.0
+    congested_flows = sorted(
+        line_flows,
+        key=lambda flow: (
+            flow.loading_percent
+            * config.planning_stress_factor
+        ),
+        reverse=True,
+    )[: config.top_congested_lines]
 
+    for flow in congested_flows:
 
-def _estimate_voltage_kv(
-    from_bus: int,
-    to_bus: int,
-    bus_voltage_by_id: dict[int, float],
-) -> float:
-    from_voltage = bus_voltage_by_id.get(
-        from_bus, 110.0
-    )
-    to_voltage = bus_voltage_by_id.get(
-        to_bus, from_voltage
-    )
-    return float((from_voltage + to_voltage) / 2.0)
+        if len(candidates) >= remaining:
+            break
+
+        from_bus = int(flow.from_bus)
+        to_bus = int(flow.to_bus)
+
+        from_neighbors = list(
+            adjacency.get(from_bus, set())
+        )[: config.relief_neighbors_per_side]
+
+        to_neighbors = list(
+            adjacency.get(to_bus, set())
+        )[: config.relief_neighbors_per_side]
+
+        for left_bus in from_neighbors:
+            for right_bus in to_neighbors:
+
+                if len(candidates) >= remaining:
+                    break
+
+                if left_bus == right_bus:
+                    continue
+
+                if (
+                    left_bus,
+                    right_bus,
+                ) in existing_edges:
+                    continue
+
+                reference_line_id = (
+                    _assign_relief_reference_line(
+                        flow
+                    )
+                )
+
+                length_km = (
+                    tinh_khoang_cach_bus(
+                        data,
+                        left_bus,
+                        right_bus,
+                    )
+                )
+
+                if length_km is None:
+                    length_km = 1.0
+
+                reference_line = next(
+                    line
+                    for line in lines
+                    if line.id
+                    == reference_line_id
+                )
+
+                reference_voltage = (
+                    _get_reference_voltage(
+                        reference_line=reference_line,
+                        bus_voltage_by_id=
+                        bus_voltage_by_id,
+                    )
+                )
+
+                build_cost = (
+                    _estimate_cost(
+                        length_km=length_km,
+                        voltage_kv=reference_voltage,
+                        max_current_ka=None,
+                    )
+                )
+
+                existing_edges.add(
+                    (left_bus, right_bus)
+                )
+                existing_edges.add(
+                    (right_bus, left_bus)
+                )
+
+                candidates.append(
+                    CandidateLine(
+                        candidate_id="",
+                        from_bus=left_bus,
+                        to_bus=right_bus,
+                        reference_line_id=
+                            reference_line_id,
+                        build_cost=build_cost,
+                        length_km=length_km,
+                    )
+                )
+
+    return candidates
 
 
 def _estimate_cost(
@@ -385,3 +636,37 @@ def _estimate_cost(
             0.5,
         )
     return float(length_km * unit_cost * current_factor)
+
+
+def _build_bus_adjacency(lines) -> dict[int, set[int]]:
+    adjacency: dict[int, set[int]] = {}
+
+    for line in lines:
+        adjacency.setdefault(
+            line.from_bus,
+            set(),
+        ).add(line.to_bus)
+
+        adjacency.setdefault(
+            line.to_bus,
+            set(),
+        ).add(line.from_bus)
+
+    return adjacency
+
+
+def _get_reference_voltage(
+    *,
+    reference_line,
+    bus_voltage_by_id,
+) -> float:
+
+    return max(
+        bus_voltage_by_id[
+            reference_line.from_bus
+        ],
+        bus_voltage_by_id[
+            reference_line.to_bus
+        ],
+    )
+

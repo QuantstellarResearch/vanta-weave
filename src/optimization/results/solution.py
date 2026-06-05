@@ -10,25 +10,15 @@ from datetime import datetime
 
 @dataclass(frozen=True)
 class SelectedExpansionDecision:
-    """
-    Canonical selected infrastructure expansion decision.
-
-    Represents:
-    - approved expansion action
-    - selected candidate line
-    - infrastructure build recommendation
-    """
 
     candidate_id: str
 
     from_bus: str
     to_bus: str
 
-    capacity_mva: float
+    reference_line_id: int
 
     build_cost: float
-
-    voltage_kv: float
 
     decision_score: float
 

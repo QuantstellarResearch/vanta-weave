@@ -24,6 +24,7 @@ from problems.eon_grid_expansion.constraints import (
     TopologyConstraint,
     BinaryDecisionConstraint,
 )
+from problems.eon_grid_expansion.analytics import CandidateAnalytics
 
 from problems.eon_grid_expansion.scenarios import ScenarioContext
 
@@ -62,3 +63,5 @@ class GridExpansionProblem:
     scenario: ScenarioContext
 
     objectives: MultiObjectiveDefinition
+
+    analytics: CandidateAnalytics

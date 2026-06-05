@@ -15,6 +15,13 @@ from workflows.run_optimization import (
     OptimizationRunConfig,
     run_optimization,
 )
+from workflows.evaluate_candidates import (
+    evaluate_candidates_workflow,
+)
+
+from src.evaluation.projections import (
+    build_candidate_severity_reduction_map,
+)
 
 
 OUTPUT_DIR = Path("outputs")
@@ -42,6 +49,10 @@ def write_workflow_manifest(
         "solver_name": solver_name,
         "budget_ratio": budget_ratio,
         "candidate_count": candidate_count,
+        "evaluation_metric":
+            "overload_severity_reduction",
+        "evaluation_mode":
+            "dc_power_flow",
         "generated_at": datetime.now(UTC).isoformat(),
         "run_dir": str(run_dir),
     }
@@ -53,13 +64,26 @@ def write_workflow_manifest(
 
 
 def run_eon_workflow(
-    solver_name: str = "highs",
+    solver_name: str = "cplex",
 ) -> dict:
     data = load_data()
 
     candidates = generate_candidates(
         data=data,
         config=CandidateGenerationConfig(),
+    )
+
+    evaluation_dataset = (
+        evaluate_candidates_workflow(
+            data=data,
+            candidates=candidates,
+        )
+    )
+
+    candidate_severity_reduction_map = (
+        build_candidate_severity_reduction_map(
+            evaluation_dataset
+        )
     )
 
     write_candidate_list(candidates)
@@ -78,6 +102,8 @@ def run_eon_workflow(
     result = run_optimization(
         data=data,
         candidates=candidates,
+        candidate_severity_reduction_map=
+        candidate_severity_reduction_map,
         config=OptimizationRunConfig(
             solver_name=solver_name,
         ),
@@ -150,16 +176,21 @@ def _build_output_payload(
                 "candidate_id": candidate.candidate_id,
                 "from_bus": candidate.from_bus,
                 "to_bus": candidate.to_bus,
-                "capacity_mva": candidate.capacity_mva,
+                "reference_line_id":
+                candidate.reference_line_id,
+                "length_km":
+                candidate.length_km,
                 "build_cost": candidate.build_cost,
-                "voltage_kv": candidate.voltage_kv,
             }
             for candidate in selected_candidates
         ],
         "assumptions": {
-            "candidates": "heuristic",
-            "costs": "proxy",
-            "budget": "ratio",
+            "candidate_evaluation":
+            "dc_power_flow",
+            "congestion_metric":
+            "overload_severity_reduction",
+            "objective_signal":
+            "overload_severity_reduction",
         },
     }
 
@@ -176,9 +207,9 @@ def _write_outputs(*, payload: dict) -> None:
         "candidate_id",
         "from_bus",
         "to_bus",
-        "capacity_mva",
+        "reference_line_id",
+        "length_km",
         "build_cost",
-        "voltage_kv",
     ]
 
     with CSV_PATH.open(

@@ -19,19 +19,6 @@ Semantic -> Formulation -> Pyomo Execution -> Results/Topology
 - **Pyomo pipeline**: build model, attach variables/constraints/objectives, solve via HiGHS/Gurobi.
 - **Results/Topology**: normalized solution artifacts, analytics, and explainability signals.
 
-## Core Modules
-- `problems/eon_grid_expansion/*`
-  Semantic definitions: problem, constraints, objectives, decision space, scenarios.
-
-- `src/optimization/pyomo/*`
-  Executable pipeline: model build, variable/constraint/objective attachment, solve.
-
-- `src/optimization/results/*`
-  Normalized solution artifacts and analytics.
-
-- `src/optimization/topology/*`
-  Topology metrics and explainability heuristics.
-
 ## Status / MVP Scope
 - Pyomo build + solve pipeline is operational.
 - Results and topology layers provide explainability and planning-grade analytics.

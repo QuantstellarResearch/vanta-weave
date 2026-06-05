@@ -83,38 +83,21 @@ def build_expansion_cost_expression(
         )
     )
 
-
 # =========================================================
-# CONGESTION PROXY OBJECTIVE
+# CONGESTION REDUCTION OBJECTIVE
 # =========================================================
 
-def build_congestion_proxy_expression(
-    optimization_model: PyomoOptimizationModel,
-    problem: GridExpansionProblem,
-    formulation: GridExpansionFormulation,
+def build_congestion_reduction_expression(
+        optimization_model: PyomoOptimizationModel,
+        problem: GridExpansionProblem,
+        formulation: GridExpansionFormulation,
 ):
-    """
-    Build simplified executable congestion reduction proxy.
-
-    IMPORTANT:
-    Phase current:
-    - simplified proxy objective
-    - infrastructure-oriented
-    - MILP-friendly
-
-    NOT:
-    - full AC congestion modeling
-    - nonlinear power flow optimization
-    """
-
     model = optimization_model.model
 
-    candidate_line_map = {
-        candidate.candidate_id: candidate
-        for candidate in (
-            problem.decision_space.candidate_lines
-        )
-    }
+    severity_map = (
+        problem.analytics
+        .overload_severity_reduction
+    )
 
     variable_map = {
         variable.variable_id: variable
@@ -122,19 +105,15 @@ def build_congestion_proxy_expression(
     }
 
     return sum(
-        (
-            candidate_line_map[
-                variable_map[variable_id].candidate_id
-            ].capacity_mva
-            /
-            max(
-                candidate_line_map[
-                    variable_map[variable_id].candidate_id
-                ].build_cost,
-                1.0,
-            )
-        )
+
+        severity_map[
+            variable_map[
+                variable_id
+            ].candidate_id
+        ]
+
         *
+
         model.expansion_decision_variables[
             variable_id
         ]
@@ -143,7 +122,6 @@ def build_congestion_proxy_expression(
             model.EXPANSION_DECISION_VARIABLES
         )
     )
-
 
 # =========================================================
 # MULTI-OBJECTIVE COMPOSITION
@@ -173,7 +151,7 @@ def build_multi_objective_expression(
     expansion_cost_weight = 0.05
 
     congestion_expression = (
-        build_congestion_proxy_expression(
+        build_congestion_reduction_expression(
             optimization_model=optimization_model,
             problem=problem,
             formulation=formulation,

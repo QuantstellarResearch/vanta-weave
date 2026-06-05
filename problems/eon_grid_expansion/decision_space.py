@@ -2,17 +2,17 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class CandidateLine:
+
     candidate_id: str
 
-    from_bus: str
-    to_bus: str
-
-    capacity_mva: float
-    build_cost: float
+    from_bus: int
+    to_bus: int
 
     length_km: float
-    voltage_kv: float
 
+    reference_line_id: int
+
+    build_cost: float
 
 @dataclass
 class DecisionSpace:

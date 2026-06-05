@@ -84,7 +84,7 @@ class CandidateExpansionOverlay:
     from_node: str
     to_node: str
 
-    capacity_mva: float
+    reference_line_id: int
 
     build_cost: float
 
@@ -230,8 +230,8 @@ def build_candidate_overlays(
                     str(candidate.to_bus)
                 ),
 
-                capacity_mva=(
-                    candidate.capacity_mva
+                reference_line_id=(
+                    candidate.reference_line_id
                 ),
 
                 build_cost=(
@@ -349,9 +349,8 @@ def project_solution_overlay(
                 expansion.candidate_id
             ),
 
-            capacity_mva=(
-                expansion.capacity_mva
-            ),
+            reference_line_id=
+            expansion.reference_line_id,
 
             build_cost=(
                 expansion.build_cost

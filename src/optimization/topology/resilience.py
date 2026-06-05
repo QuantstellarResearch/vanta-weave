@@ -8,10 +8,6 @@ from src.optimization.topology.graph import (
     GraphProjectionArtifacts,
 )
 
-from src.optimization.results.solution import (
-    OptimizationSolution,
-)
-
 
 # =========================================================
 # CRITICAL INFRASTRUCTURE EDGE
