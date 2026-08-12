@@ -1,0 +1,356 @@
+{
+  "generator": "generate_candidates",
+  "count": 50,
+  "candidates": [
+    {
+      "candidate_id": "cand_parallel_7_8_ref6_c331_hb93d6b",
+      "from_bus": "7",
+      "to_bus": "8",
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0
+    },
+    {
+      "candidate_id": "cand_parallel_8_9_ref7_c331_h23a78d",
+      "from_bus": "8",
+      "to_bus": "9",
+      "build_cost": 3.313488501436114,
+      "length_km": 1.0
+    },
+    {
+      "candidate_id": "cand_relief_29_63_ref89_c62119_haf1dd3",
+      "from_bus": "29",
+      "to_bus": "63",
+      "build_cost": 621.1925286266259,
+      "length_km": 310.59626431331293
+    },
+    {
+      "candidate_id": "cand_relief_89_101_ref128_c20708_h94733c",
+      "from_bus": "89",
+      "to_bus": "101",
+      "build_cost": 207.07608076061288,
+      "length_km": 207.07608076061288
+    },
+    {
+      "candidate_id": "cand_relief_89_99_ref128_c39030_h1486fb",
+      "from_bus": "89",
+      "to_bus": "99",
+      "build_cost": 390.29838861592805,
+      "length_km": 390.29838861592805
+    },
+    {
+      "candidate_id": "cand_relief_9_29_ref6_c86758_he3f86d",
+      "from_bus": "29",
+      "to_bus": "9",
+      "build_cost": 867.5759901420919,
+      "length_km": 433.78799507104594
+    },
+    {
+      "candidate_id": "cand_shortcut_24_25_ref6_c29494_h65d1f3",
+      "from_bus": "25",
+      "to_bus": "24",
+      "build_cost": 294.9383374685644,
+      "length_km": 147.4691687342822
+    },
+    {
+      "candidate_id": "cand_shortcut_24_48_ref0_c46929_h9debf7",
+      "from_bus": "48",
+      "to_bus": "24",
+      "build_cost": 469.2930514587563,
+      "length_km": 469.2930514587563
+    },
+    {
+      "candidate_id": "cand_shortcut_24_58_ref0_c41119_he58685",
+      "from_bus": "58",
+      "to_bus": "24",
+      "build_cost": 411.1901585002174,
+      "length_km": 411.1901585002174
+    },
+    {
+      "candidate_id": "cand_shortcut_24_64_ref6_c73039_h12cb5e",
+      "from_bus": "64",
+      "to_bus": "24",
+      "build_cost": 730.3879764209055,
+      "length_km": 365.19398821045274
+    },
+    {
+      "candidate_id": "cand_shortcut_24_65_ref0_c35653_hdf3a31",
+      "from_bus": "65",
+      "to_bus": "24",
+      "build_cost": 356.5250500369533,
+      "length_km": 356.5250500369533
+    },
+    {
+      "candidate_id": "cand_shortcut_24_79_ref0_c78295_h03be44",
+      "from_bus": "79",
+      "to_bus": "24",
+      "build_cost": 782.9479046053577,
+      "length_km": 782.9479046053577
+    },
+    {
+      "candidate_id": "cand_shortcut_24_88_ref0_c116102_h177243",
+      "from_bus": "88",
+      "to_bus": "24",
+      "build_cost": 1161.0211576471518,
+      "length_km": 1161.0211576471518
+    },
+    {
+      "candidate_id": "cand_shortcut_24_99_ref0_c104763_h4229de",
+      "from_bus": "99",
+      "to_bus": "24",
+      "build_cost": 1047.633439283491,
+      "length_km": 1047.633439283491
+    },
+    {
+      "candidate_id": "cand_shortcut_25_48_ref6_c93095_h1bf21b",
+      "from_bus": "25",
+      "to_bus": "48",
+      "build_cost": 930.9496557335159,
+      "length_km": 465.47482786675795
+    },
+    {
+      "candidate_id": "cand_shortcut_25_58_ref6_c98038_h708a4c",
+      "from_bus": "58",
+      "to_bus": "25",
+      "build_cost": 980.3829247005932,
+      "length_km": 490.1914623502966
+    },
+    {
+      "candidate_id": "cand_shortcut_25_64_ref6_c61864_h2e739a",
+      "from_bus": "64",
+      "to_bus": "25",
+      "build_cost": 618.6438738229307,
+      "length_km": 309.32193691146534
+    },
+    {
+      "candidate_id": "cand_shortcut_25_65_ref6_c70439_h61c4aa",
+      "from_bus": "65",
+      "to_bus": "25",
+      "build_cost": 704.3938214022546,
+      "length_km": 352.1969107011273
+    },
+    {
+      "candidate_id": "cand_shortcut_25_79_ref6_c145864_h6fdad4",
+      "from_bus": "79",
+      "to_bus": "25",
+      "build_cost": 1458.638767562137,
+      "length_km": 729.3193837810685
+    },
+    {
+      "candidate_id": "cand_shortcut_25_88_ref6_c226668_h5bddf1",
+      "from_bus": "88",
+      "to_bus": "25",
+      "build_cost": 2266.684511505195,
+      "length_km": 1133.3422557525976
+    },
+    {
+      "candidate_id": "cand_shortcut_25_99_ref6_c196928_h6c65b4",
+      "from_bus": "25",
+      "to_bus": "99",
+      "build_cost": 1969.2820624633894,
+      "length_km": 984.6410312316947
+    },
+    {
+      "candidate_id": "cand_shortcut_48_58_ref0_c26751_h6c9d0e",
+      "from_bus": "58",
+      "to_bus": "48",
+      "build_cost": 267.5056518581972,
+      "length_km": 267.5056518581972
+    },
+    {
+      "candidate_id": "cand_shortcut_48_64_ref6_c38960_ha8cc09",
+      "from_bus": "64",
+      "to_bus": "48",
+      "build_cost": 389.59985690787676,
+      "length_km": 194.79992845393838
+    },
+    {
+      "candidate_id": "cand_shortcut_48_79_ref0_c35554_h3f5cd5",
+      "from_bus": "79",
+      "to_bus": "48",
+      "build_cost": 355.5444542437955,
+      "length_km": 355.5444542437955
+    },
+    {
+      "candidate_id": "cand_shortcut_48_88_ref0_c69350_h718f9a",
+      "from_bus": "88",
+      "to_bus": "48",
+      "build_cost": 693.4991546171381,
+      "length_km": 693.4991546171381
+    },
+    {
+      "candidate_id": "cand_shortcut_48_99_ref0_c62028_ha2a289",
+      "from_bus": "48",
+      "to_bus": "99",
+      "build_cost": 620.2842726838383,
+      "length_km": 620.2842726838383
+    },
+    {
+      "candidate_id": "cand_shortcut_58_64_ref6_c75160_h5a36d4",
+      "from_bus": "58",
+      "to_bus": "64",
+      "build_cost": 751.5957134183059,
+      "length_km": 375.79785670915294
+    },
+    {
+      "candidate_id": "cand_shortcut_58_65_ref0_c25338_haccd1c",
+      "from_bus": "58",
+      "to_bus": "65",
+      "build_cost": 253.3789701678098,
+      "length_km": 253.3789701678098
+    },
+    {
+      "candidate_id": "cand_shortcut_58_79_ref0_c60998_h2933d2",
+      "from_bus": "79",
+      "to_bus": "58",
+      "build_cost": 609.9788741193513,
+      "length_km": 609.9788741193513
+    },
+    {
+      "candidate_id": "cand_shortcut_58_88_ref0_c87674_h4d1ec6",
+      "from_bus": "88",
+      "to_bus": "58",
+      "build_cost": 876.7403968767976,
+      "length_km": 876.7403968767976
+    },
+    {
+      "candidate_id": "cand_shortcut_58_99_ref0_c86468_h3cbde6",
+      "from_bus": "58",
+      "to_bus": "99",
+      "build_cost": 864.6779785122028,
+      "length_km": 864.6779785122028
+    },
+    {
+      "candidate_id": "cand_shortcut_64_65_ref6_c24915_h93c312",
+      "from_bus": "65",
+      "to_bus": "64",
+      "build_cost": 249.1466824769948,
+      "length_km": 124.5733412384974
+    },
+    {
+      "candidate_id": "cand_shortcut_64_79_ref6_c84579_h0fa1f1",
+      "from_bus": "79",
+      "to_bus": "64",
+      "build_cost": 845.7887043750992,
+      "length_km": 422.8943521875496
+    },
+    {
+      "candidate_id": "cand_shortcut_64_88_ref6_c164909_h1eb529",
+      "from_bus": "88",
+      "to_bus": "64",
+      "build_cost": 1649.094833331056,
+      "length_km": 824.547416665528
+    },
+    {
+      "candidate_id": "cand_shortcut_64_99_ref6_c136835_h289f0c",
+      "from_bus": "64",
+      "to_bus": "99",
+      "build_cost": 1368.3492760778659,
+      "length_km": 684.1746380389329
+    },
+    {
+      "candidate_id": "cand_shortcut_65_79_ref0_c44232_h1e7f46",
+      "from_bus": "79",
+      "to_bus": "65",
+      "build_cost": 442.32053623443625,
+      "length_km": 442.32053623443625
+    },
+    {
+      "candidate_id": "cand_shortcut_65_88_ref0_c80454_h6de027",
+      "from_bus": "88",
+      "to_bus": "65",
+      "build_cost": 804.5387883863646,
+      "length_km": 804.5387883863646
+    },
+    {
+      "candidate_id": "cand_shortcut_65_99_ref0_c71000_h7a1702",
+      "from_bus": "65",
+      "to_bus": "99",
+      "build_cost": 710.003906864668,
+      "length_km": 710.003906864668
+    },
+    {
+      "candidate_id": "cand_shortcut_79_88_ref0_c42741_hc515ac",
+      "from_bus": "79",
+      "to_bus": "88",
+      "build_cost": 427.40812607197864,
+      "length_km": 427.40812607197864
+    },
+    {
+      "candidate_id": "cand_shortcut_79_99_ref0_c26769_h0bc804",
+      "from_bus": "79",
+      "to_bus": "99",
+      "build_cost": 267.6863660272739,
+      "length_km": 267.6863660272739
+    },
+    {
+      "candidate_id": "cand_shortcut_88_99_ref0_c30077_h651287",
+      "from_bus": "88",
+      "to_bus": "99",
+      "build_cost": 300.77148574748935,
+      "length_km": 300.77148574748935
+    },
+    {
+      "candidate_id": "cand_shortcut_9_24_ref6_c83484_hd4e39e",
+      "from_bus": "9",
+      "to_bus": "24",
+      "build_cost": 834.8413472744755,
+      "length_km": 417.42067363723777
+    },
+    {
+      "candidate_id": "cand_shortcut_9_25_ref6_c78214_h123121",
+      "from_bus": "9",
+      "to_bus": "25",
+      "build_cost": 782.1430674376005,
+      "length_km": 391.07153371880025
+    },
+    {
+      "candidate_id": "cand_shortcut_9_48_ref6_c170915_h48e224",
+      "from_bus": "9",
+      "to_bus": "48",
+      "build_cost": 1709.1500235268638,
+      "length_km": 854.5750117634319
+    },
+    {
+      "candidate_id": "cand_shortcut_9_58_ref6_c165639_h72af95",
+      "from_bus": "9",
+      "to_bus": "58",
+      "build_cost": 1656.3894349542825,
+      "length_km": 828.1947174771412
+    },
+    {
+      "candidate_id": "cand_shortcut_9_64_ref6_c139566_h7edabf",
+      "from_bus": "9",
+      "to_bus": "64",
+      "build_cost": 1395.6643344478603,
+      "length_km": 697.8321672239301
+    },
+    {
+      "candidate_id": "cand_shortcut_9_65_ref6_c148025_hd6c4de",
+      "from_bus": "9",
+      "to_bus": "65",
+      "build_cost": 1480.2460300543105,
+      "length_km": 740.1230150271552
+    },
+    {
+      "candidate_id": "cand_shortcut_9_79_ref6_c222133_h48ff22",
+      "from_bus": "79",
+      "to_bus": "9",
+      "build_cost": 2221.3320303111173,
+      "length_km": 1110.6660151555586
+    },
+    {
+      "candidate_id": "cand_shortcut_9_88_ref6_c304446_h217c82",
+      "from_bus": "88",
+      "to_bus": "9",
+      "build_cost": 3044.4633574219856,
+      "length_km": 1522.2316787109928
+    },
+    {
+      "candidate_id": "cand_shortcut_9_99_ref6_c271283_hfcacdd",
+      "from_bus": "9",
+      "to_bus": "99",
+      "build_cost": 2712.83203916835,
+      "length_km": 1356.416019584175
+    }
+  ]
+}

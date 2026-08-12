@@ -1,0 +1,12 @@
+{
+  "objective_value": 0.0,
+  "solver_name": "CPLEX",
+  "solve_time_seconds": 0.25014410074800253,
+  "selected_count": 0,
+  "selected_candidates": [],
+  "assumptions": {
+    "candidate_evaluation": "dc_power_flow",
+    "congestion_metric": "overload_severity_reduction",
+    "objective_signal": "overload_severity_reduction"
+  }
+}

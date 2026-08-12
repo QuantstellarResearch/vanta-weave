@@ -1,0 +1,12 @@
+{
+  "problem_id": "eon_grid_expansion",
+  "scenario_id": "baseline",
+  "scenario_name": "Baseline",
+  "solver_name": "cplex",
+  "budget_ratio": 0.15,
+  "candidate_count": 50,
+  "evaluation_metric": "overload_severity_reduction",
+  "evaluation_mode": "dc_power_flow",
+  "generated_at": "2026-06-06T04:26:13.678840+00:00",
+  "run_dir": "outputs"
+}
