@@ -49,7 +49,7 @@ def _render_markdown(payload: dict) -> str:
     timestamp = datetime.now(UTC).isoformat()
 
     lines = [
-        "# Vanta Quantum Workflow Report",
+        "# Vanta Weave Workflow Report",
         "",
         f"Generated: {timestamp} UTC",
         "",

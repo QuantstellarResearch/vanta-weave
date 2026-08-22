@@ -2,7 +2,7 @@
 Canonical semantic composition for the E.ON grid expansion problem.
 
 This module defines the root optimization problem abstraction
-used throughout the Vanta Quantum workflow.
+used throughout the Vanta Weave workflow.
 
 IMPORTANT:
 - This layer is semantic-only.

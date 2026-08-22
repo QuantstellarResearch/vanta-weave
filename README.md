@@ -1,7 +1,7 @@
-# Vanta Quantum
+# Vanta Weave
 
 ## Project Overview
-Vanta Quantum is a transmission line expansion planning system focused on congestion relief and cost-aware investment decisions.
+Vanta Weave is a transmission line expansion planning system focused on congestion relief and cost-aware investment decisions.
 It models grid expansion as a combinatorial optimization problem: selecting candidate lines to build in order to reduce overload risk while controlling capital expenditure.
 The architecture separates semantic problem definition, mathematical formulation, and executable Pyomo optimization, with a results layer for analytics and explainability.
 
@@ -9,7 +9,7 @@ The architecture separates semantic problem definition, mathematical formulation
 - Grid congestion directly impacts reliability and operational risk.
 - Expansion planning is a high-stakes CapEx decision that benefits from transparent, data-driven optimization.
 - Critical infrastructure decisions require explainable, auditable recommendations.
-- Vanta Quantum targets practical, decision-grade outputs rather than black-box predictions.
+- Vanta Weave targets practical, decision-grade outputs rather than black-box predictions.
 
 ## Architecture Overview
 Semantic -> Formulation -> Pyomo Execution -> Results/Topology

@@ -3694,7 +3694,7 @@ dev = [
 ]
 
 [[package]]
-name = "vanta-quantum"
+name = "vanta-weave"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
